@@ -11,10 +11,12 @@ if exists("g:loaded_metapost_hilight")
 endif
 let g:loaded_metapost_hilight = 1
 
-" 检测 tex 文件类型并启用语法高亮
+" 检测 tex 文件类型并启用语法高亮和缩进
 augroup MetaPostHilight
   autocmd!
   autocmd FileType tex,plaintex,context syntax sync minlines=50
+  " 确保缩进文件被加载
+  autocmd FileType tex,plaintex,context runtime! after/indent/tex.vim
 augroup END
 
 " 命令：手动重新加载语法
