@@ -3,6 +3,11 @@
 "   - \begin{mpostfig} ... \end{mpostfig} - MetaPost 代码块
 "   - \begin{mpostdef} ... \end{mpostdef} - MetaPost 定义块
 "   - \begin{mposttex} ... \end{mposttex} - LaTeX 代码块
+" mpgraphics 包支持：
+"   - \begin{mpdisplay} ... \end{mpdisplay} - MetaPost 代码块
+"   - \begin{mpinline} ... \end{mpinline} - MetaPost 代码块
+"   - \begin{mpdefs} ... \end{mpdefs} - MetaPost 定义块
+"   - \begin{ltxpreamble} ... \end{ltxpreamble} - LaTeX 代码块
 " 尝试使用 Vim 内置的 MetaPost 语法文件 (syntax/mp.vim)，与 ft=mp 保持一致
 
 " 先包含 MetaPost 语法（必须在定义区域之前）
@@ -75,9 +80,52 @@ syn region texMpostTexContent
       \ transparent
       \ keepend
 
+" ===== mpgraphics 包支持 =====
+
+" 定义 mpdisplay 环境（MetaPost 代码块）
+" 使用与 mpostfig 相同的 MetaPost 语法高亮
+syn region texMpDisplayContent
+      \ matchgroup=texCmd
+      \ start="\\begin{mpdisplay}"
+      \ end="\\end{mpdisplay}"
+      \ contains=@mpostSyntax
+      \ keepend
+
+" 定义 mpinline 环境（MetaPost 代码块）
+" 使用与 mpostfig 相同的 MetaPost 语法高亮
+syn region texMpInlineContent
+      \ matchgroup=texCmd
+      \ start="\\begin{mpinline}"
+      \ end="\\end{mpinline}"
+      \ contains=@mpostSyntax
+      \ keepend
+
+" 定义 mpdefs 环境（MetaPost 定义块）
+" 使用与 mpostdef 相同的 MetaPost 语法高亮
+syn region texMpDefsContent
+      \ matchgroup=texCmd
+      \ start="\\begin{mpdefs}"
+      \ end="\\end{mpdefs}"
+      \ contains=@mpostSyntax
+      \ keepend
+
+" 定义 ltxpreamble 环境（LaTeX 代码块）
+" 使用 transparent 让 tex 语法自然处理内容，确保 \usepackage 等命令被正确高亮
+" matchgroup 确保 \begin 和 \end 标记被正确高亮
+syn region texLtxPreambleContent
+      \ matchgroup=texCmd
+      \ start="\\begin{ltxpreamble}"
+      \ end="\\end{ltxpreamble}"
+      \ transparent
+      \ keepend
+
 " 高亮组
 " 内容区域不需要额外高亮（让内容使用各自的语法高亮）
 hi def link texMpostFigContent NONE
 hi def link texMpostDefContent NONE
 hi def link texMpostTexContent NONE
+hi def link texMpDisplayContent NONE
+hi def link texMpInlineContent NONE
+hi def link texMpDefsContent NONE
+hi def link texLtxPreambleContent NONE
 
