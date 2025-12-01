@@ -8,9 +8,20 @@ endif
 
 " 关键字
 syn keyword mpostKeyword contained numeric string boolean path pair transform color
-syn keyword mpostKeyword contained new_vec free_vec set_point_
-syn keyword mpostKeyword contained vec_def_vec_ vec_rotate_ vec_prod_ vec_mult_ vec_sum_ vec_diff vec_unit
 syn keyword mpostKeyword contained if else fi for endfor forever enddef def vardef
+
+" 非标准 MetaPost 关键字（使用 match 确保包含下划线的关键字被正确匹配）
+" 这些是扩展库（如 3danim）提供的函数
+syn match mpostKeyword contained "\<new_vec\>"
+syn match mpostKeyword contained "\<free_vec\>"
+syn match mpostKeyword contained "\<set_point_\>"
+syn match mpostKeyword contained "\<vec_def_vec_\>"
+syn match mpostKeyword contained "\<vec_rotate_\>"
+syn match mpostKeyword contained "\<vec_prod_\>"
+syn match mpostKeyword contained "\<vec_mult_\>"
+syn match mpostKeyword contained "\<vec_sum_\>"
+syn match mpostKeyword contained "\<vec_diff\>"
+syn match mpostKeyword contained "\<vec_unit\>"
 
 " 内置函数
 syn keyword mpostFunction contained cosd sind cos sin sqrt abs round floor ceiling
@@ -39,6 +50,8 @@ syn match mpostNumber contained "\<\d\+\.\d\+[eE][+-]\?\d\+\>"
 syn region mpostString contained start=+"+ end=+"+ skip=+\\"+
 
 " 变量和函数名（包含下划线的标识符）
+" 注意：关键字已经在上面定义，syn keyword 优先级高于 syn match
+" 所以关键字会被正确高亮，这里只匹配非关键字的标识符
 syn match mpostIdentifier contained "\<[a-zA-Z_][a-zA-Z0-9_]*\>"
 
 " 括号
