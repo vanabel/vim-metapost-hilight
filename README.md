@@ -21,15 +21,31 @@
 
 ### 手动安装
 
-1. 将整个插件目录复制到 Vim 的运行时路径：
-   ```bash
-   cp -r MetaPostHilight ~/.vim/
-   ```
+**方式一：使用 Git 克隆（推荐）**
 
-   或者如果使用 Neovim：
-   ```bash
-   cp -r MetaPostHilight ~/.config/nvim/
-   ```
+对于 Vim：
+```bash
+cd ~/.vim
+git clone https://github.com/vanabel/vim-metapost-hilight.git
+```
+
+对于 Neovim：
+```bash
+cd ~/.config/nvim
+git clone https://github.com/vanabel/vim-metapost-hilight.git
+```
+
+**方式二：直接复制目录**
+
+如果您已经下载了插件目录，可以复制到 Vim 的运行时路径：
+```bash
+cp -r vim-metapost-hilight ~/.vim/
+```
+
+或者如果使用 Neovim：
+```bash
+cp -r vim-metapost-hilight ~/.config/nvim/
+```
 
 ### 使用插件管理器
 
@@ -37,11 +53,11 @@
 
 **方式一：使用本地路径（推荐用于本地开发）**
 
-如果您的插件目录在本地，例如 `/Users/vanabel/development/vim/MetaPostHilight`，在 `~/.vimrc` 中添加：
+如果您的插件目录在本地，例如 `/Users/vanabel/development/vim/vim-metapost-hilight`，在 `~/.vimrc` 中添加：
 
 ```vim
 call plug#begin('~/.vim/myvim/plugged/')
-Plug '/Users/vanabel/development/vim/MetaPostHilight'
+Plug '/Users/vanabel/development/vim/vim-metapost-hilight'
 call plug#end()
 ```
 
@@ -49,7 +65,7 @@ call plug#end()
 
 ```vim
 call plug#begin('~/.vim/myvim/plugged/')
-Plug '~/development/vim/MetaPostHilight'
+Plug '~/development/vim/vim-metapost-hilight'
 call plug#end()
 ```
 
