@@ -8,6 +8,11 @@
   - `\begin{mpostfig} ... \end{mpostfig}` - MetaPost 代码块
   - `\begin{mpostdef} ... \end{mpostdef}` - MetaPost 定义块
   - `\begin{mposttex} ... \end{mposttex}` - LaTeX 代码块
+- **mpgraphics 包支持**：
+  - `\begin{mpdisplay} ... \end{mpdisplay}` - MetaPost 图形（居中显示）
+  - `\begin{mpinline} ... \end{mpinline}` - MetaPost 图形（内联模式）
+  - `\begin{mpdefs} ... \end{mpdefs}` - MetaPost 全局定义
+  - `\begin{ltxpreamble} ... \end{ltxpreamble}` - LaTeX 包和宏
 - 高亮 MetaPost 关键字、函数、变量、注释等
 - 支持常见的 MetaPost 语法元素
 - 自动应用于 `.tex` 文件
@@ -85,9 +90,15 @@ use 'your-username/MetaPostHilight'
    - `\begin{mpostfig} ... \end{mpostfig}` - MetaPost 代码
    - `\begin{mpostdef} ... \end{mpostdef}` - MetaPost 定义
    - `\begin{mposttex} ... \end{mposttex}` - LaTeX 代码
+   - `\begin{mpdisplay} ... \end{mpdisplay}` - MetaPost 图形（mpgraphics 包）
+   - `\begin{mpinline} ... \end{mpinline}` - MetaPost 图形内联（mpgraphics 包）
+   - `\begin{mpdefs} ... \end{mpdefs}` - MetaPost 全局定义（mpgraphics 包）
+   - `\begin{ltxpreamble} ... \end{ltxpreamble}` - LaTeX 包和宏（mpgraphics 包）
 3. 无需额外配置，插件会自动工作
 
 ### 示例
+
+#### 基础用法（mpost 包）
 
 ```latex
 \begin{mpostdef}
@@ -107,6 +118,45 @@ use 'your-username/MetaPostHilight'
   vec_rotate_(v_a, vec_K, d);
 \end{mpostfig}
 ```
+
+#### mpgraphics 包示例
+
+根据 [mpgraphics 包文档](https://mirror-hk.koddos.net/CTAN/macros/latex/contrib/mpgraphics/mpgraphics.pdf)，以下示例展示了如何使用 mpgraphics 包：
+
+```latex
+% 全局 MetaPost 定义和输入
+\begin{mpdefs}
+  input boxes;
+  u := 1cm;
+\end{mpdefs}
+
+% LaTeX 包和宏（在 MetaPost 图形中使用的包）
+\begin{ltxpreamble}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\end{ltxpreamble}
+
+% 居中显示的 MetaPost 图形
+\begin{mpdisplay}
+beginfig(1);
+  u := 1cm;
+  draw (2u,2u) -- (0,0) -- (0,3u) -- (3u,0) -- (0,0);
+  label.top(btex $x$ etex, (1.5u, 3u));
+  label.rt(btex $y$ etex, (3u, 1.5u));
+endfig;
+\end{mpdisplay}
+
+% 内联模式的 MetaPost 图形
+\begin{mpinline}
+beginfig(2);
+  draw fullcircle scaled 1cm;
+endfig;
+\end{mpinline}
+```
+
+**注意**：使用 mpgraphics 包时，需要：
+- 使用 `-shell-escape` 选项编译 LaTeX 文档
+- 确保已安装 MetaPost 和 epstopdf 程序
 
 ## 高亮元素
 
@@ -147,8 +197,18 @@ MetaPostHilight/
    - `\begin{mpostfig} ... \end{mpostfig}` - 应用 MetaPost 语法高亮
    - `\begin{mpostdef} ... \end{mpostdef}` - 应用 MetaPost 语法高亮
    - `\begin{mposttex} ... \end{mposttex}` - 应用 LaTeX 语法高亮
+   - `\begin{mpdisplay} ... \end{mpdisplay}` - 应用 MetaPost 语法高亮（mpgraphics 包）
+   - `\begin{mpinline} ... \end{mpinline}` - 应用 MetaPost 语法高亮（mpgraphics 包）
+   - `\begin{mpdefs} ... \end{mpdefs}` - 应用 MetaPost 语法高亮（mpgraphics 包）
+   - `\begin{ltxpreamble} ... \end{ltxpreamble}` - 应用 LaTeX 语法高亮（mpgraphics 包）
 3. 在检测到的环境中，应用相应的语法高亮（MetaPost 环境与 `ft=mp` 文件的高亮效果一致）
 4. `plugin/metapost-hilight.vim` 提供插件初始化和命令
+
+### 支持的包
+
+- **mpost 包**：支持 `mpostfig`、`mpostdef`、`mposttex` 环境
+- **mpgraphics 包**：支持 `mpdisplay`、`mpinline`、`mpdefs`、`ltxpreamble` 环境
+  - 参考：[mpgraphics 包文档](https://mirror-hk.koddos.net/CTAN/macros/latex/contrib/mpgraphics/mpgraphics.pdf)
 
 ### 使用内置 MetaPost 语法
 

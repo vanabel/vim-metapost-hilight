@@ -1,0 +1,78 @@
+\documentclass{article}
+\usepackage{mpgraphics}
+\begin{document}
+
+这是一个测试文件，展示 mpgraphics 包的环境：
+
+% 全局 MetaPost 定义和输入
+\begin{mpdefs}
+  input boxes;
+  u := 1cm;
+  
+  % 定义一些常用的宏
+  def draw_axis(expr x, y) =
+    drawarrow (0,0) -- (x,0);
+    drawarrow (0,0) -- (0,y);
+    label.top(btex $x$ etex, (x/2, y));
+    label.rt(btex $y$ etex, (x, y/2));
+  enddef;
+\end{mpdefs}
+
+% LaTeX 包和宏（在 MetaPost 图形中使用的包）
+\begin{ltxpreamble}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage[enc]{inputenc}
+\end{ltxpreamble}
+
+% 居中显示的 MetaPost 图形
+\begin{mpdisplay}
+beginfig(1);
+  u := 1cm;
+  draw (2u,2u) -- (0,0) -- (0,3u) -- (3u,0) -- (0,0);
+  label.top(btex $x$ etex, (1.5u, 3u));
+  label.rt(btex $y$ etex, (3u, 1.5u));
+endfig;
+\end{mpdisplay}
+
+% 另一个居中显示的图形
+\begin{mpdisplay}
+beginfig(2);
+  numeric pi, r;
+  pi := 3.14159;
+  r := 2cm;
+  
+  % 绘制一个圆
+  draw fullcircle scaled (2r);
+  
+  % 绘制坐标轴
+  draw_axis(3cm, 3cm);
+  
+  % 添加标签
+  label(btex $O$ etex, (0,0));
+  label(btex $r$ etex, (r, 0.3cm));
+endfig;
+\end{mpdisplay}
+
+% 内联模式的 MetaPost 图形
+\begin{mpinline}
+beginfig(3);
+  draw fullcircle scaled 1cm;
+  label(btex $\circ$ etex, (0,0));
+endfig;
+\end{mpinline}
+
+% 另一个内联图形
+\begin{mpinline}
+beginfig(4);
+  path p;
+  p := (0,0) -- (1cm, 1cm) -- (2cm, 0);
+  draw p;
+  fill p withcolor 0.8white;
+endfig;
+\end{mpinline}
+
+正文内容可以在这里继续。
+
+\end{document}
+
