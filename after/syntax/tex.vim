@@ -31,6 +31,34 @@ if !exists("b:mpost_syntax_loaded")
     try
       syn include @mpostSyntax $VIMRUNTIME/syntax/mp.vim
       let s:loaded_builtin = 1
+      " 内置语法不包含非标准关键字，需要额外添加
+      " 使用 mpKeyword 组（内置语法使用的组名）或创建新组
+      if hlexists("mpKeyword")
+        syn match mpKeyword contained "\<new_vec\>"
+        syn match mpKeyword contained "\<free_vec\>"
+        syn match mpKeyword contained "\<set_point_\>"
+        syn match mpKeyword contained "\<vec_def_vec_\>"
+        syn match mpKeyword contained "\<vec_rotate_\>"
+        syn match mpKeyword contained "\<vec_prod_\>"
+        syn match mpKeyword contained "\<vec_mult_\>"
+        syn match mpKeyword contained "\<vec_sum_\>"
+        syn match mpKeyword contained "\<vec_diff\>"
+        syn match mpKeyword contained "\<vec_unit\>"
+      else
+        " 如果内置语法组不存在，创建自定义关键字组
+        syn match mpostKeyword contained "\<new_vec\>"
+        syn match mpostKeyword contained "\<free_vec\>"
+        syn match mpostKeyword contained "\<set_point_\>"
+        syn match mpostKeyword contained "\<vec_def_vec_\>"
+        syn match mpostKeyword contained "\<vec_rotate_\>"
+        syn match mpostKeyword contained "\<vec_prod_\>"
+        syn match mpostKeyword contained "\<vec_mult_\>"
+        syn match mpostKeyword contained "\<vec_sum_\>"
+        syn match mpostKeyword contained "\<vec_diff\>"
+        syn match mpostKeyword contained "\<vec_unit\>"
+        hi def link mpostKeyword Keyword
+        syn cluster mpostSyntax add=mpostKeyword
+      endif
     catch
       " 如果失败，回退到自定义语法
       syn include @mpostSyntax syntax/mpost.vim
