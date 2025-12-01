@@ -59,7 +59,7 @@ call plug#end()
 
 ```vim
 call plug#begin('~/.vim/myvim/plugged/')
-Plug 'your-username/MetaPostHilight'
+Plug 'vanabel/vim-metapost-hilight'
 call plug#end()
 ```
 
@@ -68,19 +68,19 @@ call plug#end()
 #### Pathogen
 ```bash
 cd ~/.vim/bundle
-git clone https://github.com/your-username/MetaPostHilight.git
+git clone https://github.com/vanabel/vim-metapost-hilight.git
 ```
 
 #### Vundle
 在 `~/.vimrc` 中添加：
 ```vim
-Plugin 'your-username/MetaPostHilight'
+Plugin 'vanabel/vim-metapost-hilight'
 ```
 
 #### Packer (Neovim)
 在 `~/.config/nvim/lua/plugins.lua` 中添加：
 ```lua
-use 'your-username/MetaPostHilight'
+use 'vanabel/vim-metapost-hilight'
 ```
 
 ## 使用方法
@@ -98,7 +98,7 @@ use 'your-username/MetaPostHilight'
 
 ### 示例
 
-#### 基础用法（mpost 包）
+#### 基础用法（`mpostinl` 包）
 
 ```latex
 \begin{mpostdef}
@@ -176,7 +176,7 @@ endfig;
 ## 文件结构
 
 ```
-MetaPostHilight/
+vim-metapost-hilight/
 ├── syntax/
 │   └── mpost.vim              # MetaPost 语法定义
 ├── after/
@@ -184,7 +184,8 @@ MetaPostHilight/
 │       └── tex.vim            # LaTeX 文件中的嵌入语法
 ├── plugin/
 │   └── metapost-hilight.vim   # 主插件文件
-├── test.tex                   # 测试文件
+├── test-mpostinl.tex         # mpostinl 包测试文件
+├── test-mpgraphics.tex       # mpgraphics 包测试文件
 └── README.md
 ```
 
@@ -206,7 +207,7 @@ MetaPostHilight/
 
 ### 支持的包
 
-- **mpost 包**：支持 `mpostfig`、`mpostdef`、`mposttex` 环境
+- **mpostinl 包**：支持 `mpostfig`、`mpostdef`、`mposttex` 环境
 - **mpgraphics 包**：支持 `mpdisplay`、`mpinline`、`mpdefs`、`ltxpreamble` 环境
   - 参考：[mpgraphics 包文档](https://mirror-hk.koddos.net/CTAN/macros/latex/contrib/mpgraphics/mpgraphics.pdf)
 
