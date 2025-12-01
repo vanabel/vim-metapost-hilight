@@ -1,0 +1,16 @@
+# Vim swap files
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor files
+*.bak
+*.tmp
+
+# Test files (optional - you may want to keep test.tex)
+# test.tex
+
