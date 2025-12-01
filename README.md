@@ -218,7 +218,16 @@ MetaPostHilight/
 let g:metapost_use_builtin_syntax = 1
 ```
 
-**注意**：由于 Vim 内置的 `mp.vim` 使用 vim9script，在某些情况下可能无法正常工作。如果遇到问题，请移除该设置，使用默认的自定义语法。
+**说明**：
+- 这个变量**确实会影响高亮行为**：它控制 MetaPost 代码块使用哪个语法定义文件
+- `= 1`：使用 Vim 内置的 `$VIMRUNTIME/syntax/mp.vim`（与 `ft=mp` 文件的高亮一致）
+- `= 0` 或未设置：使用自定义的 `syntax/mpost.vim`（推荐，包含所有非标准关键字）
+- **注意**：由于 Vim 内置的 `mp.vim` 使用 vim9script，在某些情况下可能无法正常工作。如果遇到问题，请移除该设置，使用默认的自定义语法。
+
+**关于 tex 语法**：
+- 本插件**不控制** LaTeX/TeX 语法本身，tex 语法由 Vim 的标准语法文件控制
+- 本插件只在 tex 文件中添加对 MetaPost 环境的支持
+- 因此**不需要** `g:tex_use_builtin_syntax` 变量
 
 ### 自定义关键字、函数和常量
 
