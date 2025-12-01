@@ -8,7 +8,6 @@
 \begin{mpdefs}
   input boxes;
   u := 1cm;
-  
   % 定义一些常用的宏
   def draw_axis(expr x, y) =
     drawarrow (0,0) -- (x,0);
@@ -27,17 +26,14 @@
 
 % 居中显示的 MetaPost 图形
 \begin{mpdisplay}
-beginfig(1);
   u := 1cm;
   draw (2u,2u) -- (0,0) -- (0,3u) -- (3u,0) -- (0,0);
   label.top(btex $x$ etex, (1.5u, 3u));
   label.rt(btex $y$ etex, (3u, 1.5u));
-endfig;
 \end{mpdisplay}
 
 % 另一个居中显示的图形
 \begin{mpdisplay}
-beginfig(2);
   numeric pi, r;
   pi := 3.14159;
   r := 2cm;
@@ -51,25 +47,20 @@ beginfig(2);
   % 添加标签
   label(btex $O$ etex, (0,0));
   label(btex $r$ etex, (r, 0.3cm));
-endfig;
 \end{mpdisplay}
 
 % 内联模式的 MetaPost 图形
 \begin{mpinline}
-beginfig(3);
   draw fullcircle scaled 1cm;
   label(btex $\circ$ etex, (0,0));
-endfig;
 \end{mpinline}
 
 % 另一个内联图形
 \begin{mpinline}
-beginfig(4);
   path p;
   p := (0,0) -- (1cm, 1cm) -- (2cm, 0);
   draw p;
   fill p withcolor 0.8white;
-endfig;
 \end{mpinline}
 
 正文内容可以在这里继续。
