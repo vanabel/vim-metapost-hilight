@@ -1,15 +1,11 @@
 " MetaPost 缩进文件
 " 用于在 MetaPost 代码块中提供自动缩进
+" 这个文件定义 GetMetaPostIndent() 函数，可以在其他缩进文件中使用
 
-" 只在未定义时加载
-if exists("b:did_indent")
+" 只在函数未定义时加载
+if exists("*GetMetaPostIndent")
   finish
 endif
-let b:did_indent = 1
-
-" 设置缩进选项
-setlocal indentexpr=GetMetaPostIndent()
-setlocal indentkeys=!^F,o,O,0=enddef,0=endfor,0=fi,0=endfig,0=endgroup,0=end,0=else,0=elseif
 
 " 获取当前行的缩进
 function! GetMetaPostIndent()
