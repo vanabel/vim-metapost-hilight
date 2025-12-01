@@ -192,17 +192,51 @@ endfig;
 
 ## 缩进支持
 
-插件在 MetaPost 代码块中提供自动缩进功能。缩进规则基于以下 MetaPost 结构：
+插件在 MetaPost 代码块中提供自动缩进功能，缩进行为与 Vim 内置的 MetaPost 缩进（`ft=mp`）保持一致。
 
-- **增加缩进**：`def`, `vardef`, `if`, `for`, `forever`, `beginfig`, `begingroup`
-- **减少缩进**：`enddef`, `endfor`, `fi`, `endfig`, `endgroup`, `end`
-- **特殊处理**：`else`, `elseif` 会减少一级缩进
+### 缩进规则
 
-缩进功能会自动检测您是否在 MetaPost 代码块中，并应用相应的缩进规则。如果缩进没有按预期工作，可以：
+缩进基于以下 MetaPost 结构：
+
+- **增加缩进的情况**：
+  - 上一行以开放标签结尾：`def`, `vardef`, `if`, `for`, `forever`, `beginfig`, `begingroup`
+  - 上一行以 `=` 结尾（未终止的定义或赋值）：如 `vardef sphere_point(expr th, ph, r)=`
+  - 上一行以开放括号结尾：`(`, `[`, `{`
+  - 上一行包含未终止的语句（以 `save`, `draw`, `fill` 等开头但未以分号结尾）
+
+- **减少缩进的情况**：
+  - 当前行以闭合标签开头：`enddef`, `endfor`, `fi`, `endfig`, `endgroup`, `end`
+  - 当前行以 `else`, `elseif` 开头
+  - 当前行以闭合括号开头：`)`, `]`, `}`
+
+### 使用说明
+
+缩进功能会在打开 LaTeX 文件时自动启用。如果缩进没有按预期工作，可以：
 
 1. 确保 `filetype=tex` 已设置：`:set filetype=tex`
 2. 重新加载文件：`:e`
 3. 手动触发缩进：在 MetaPost 块中按 `==` 或使用 `gg=G` 重新缩进整个文件
+
+### 示例
+
+```tex
+\begin{mpostdef}
+vardef sphere_point(expr th, ph, r)=
+  begingroup
+    save v;
+    new_vec(v);
+    vec_def_(v,
+      r*cosd(ph)*sind(th),
+      r*sind(ph)*sind(th),
+      r*cosd(th)
+    );
+    v
+  endgroup
+enddef;
+\end{mpostdef}
+```
+
+在上面的示例中，`begingroup` 之后的行会自动增加缩进，`endgroup` 和 `enddef` 会自动减少缩进。
 
 ## 文件结构
 
