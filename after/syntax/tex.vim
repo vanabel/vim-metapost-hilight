@@ -46,37 +46,38 @@ if !exists("b:mpost_syntax_loaded")
   let &iskeyword = s:mpost_iskeyword_save
 endif
 
-" 定义 mpostfig 环境区域
-" 使用 contains=@mpostSyntax 来包含所有 MetaPost 语法元素
-" 这样在 tex 文件中的 mpostfig 块内，会应用与 ft=mp 相同的语法高亮
-syn region texMpostFig matchgroup=texMpostFigDelimiter
+" 定义 mpostfig 环境
+" 使用 matchgroup 让 \begin 和 \end 标记使用 texCmd 高亮（tex 命令的标准高亮）
+" 内容部分使用 MetaPost 语法
+syn region texMpostFigContent
+      \ matchgroup=texCmd
       \ start="\\begin{mpostfig}"
       \ end="\\end{mpostfig}"
       \ contains=@mpostSyntax
       \ keepend
 
-" 定义 mpostdef 环境区域（MetaPost 定义块）
+" 定义 mpostdef 环境（MetaPost 定义块）
 " 使用与 mpostfig 相同的 MetaPost 语法高亮
-syn region texMpostDef matchgroup=texMpostDefDelimiter
+syn region texMpostDefContent
+      \ matchgroup=texCmd
       \ start="\\begin{mpostdef}"
       \ end="\\end{mpostdef}"
       \ contains=@mpostSyntax
       \ keepend
 
-" 定义 mposttex 环境区域（LaTeX 代码块）
-" 使用标准的 LaTeX 语法高亮
-" 注意：由于已经在 tex 文件中，使用 texMatchGroup 确保正确的 LaTeX 语法高亮
-syn region texMpostTex matchgroup=texMpostTexDelimiter
+" 定义 mposttex 环境（LaTeX 代码块）
+" 使用 @tex 确保所有 tex 语法元素（包括 \usepackage）被正确高亮
+" @tex 包含所有 tex 语法组，包括 texInputFile（用于 \usepackage）
+syn region texMpostTexContent
+      \ matchgroup=texCmd
       \ start="\\begin{mposttex}"
       \ end="\\end{mposttex}"
-      \ contains=@texMatchGroup
+      \ contains=@tex
       \ keepend
 
 " 高亮组
-hi def link texMpostFig NONE
-hi def link texMpostFigDelimiter texDelimiter
-hi def link texMpostDef NONE
-hi def link texMpostDefDelimiter texDelimiter
-hi def link texMpostTex NONE
-hi def link texMpostTexDelimiter texDelimiter
+" 内容区域不需要额外高亮（让内容使用各自的语法高亮）
+hi def link texMpostFigContent NONE
+hi def link texMpostDefContent NONE
+hi def link texMpostTexContent NONE
 
