@@ -15,6 +15,7 @@
   - `\begin{ltxpreamble} ... \end{ltxpreamble}` - LaTeX 包和宏
 - 高亮 MetaPost 关键字、函数、变量、注释等
 - 支持常见的 MetaPost 语法元素
+- **自动缩进支持**：在 MetaPost 代码块中提供智能缩进
 - 自动应用于 `.tex` 文件
 
 ## 安装方法
@@ -189,15 +190,33 @@ endfig;
 
 - `:MetaPostReload` - 手动重新加载语法高亮（如果高亮没有正确显示，可以尝试此命令）
 
+## 缩进支持
+
+插件在 MetaPost 代码块中提供自动缩进功能。缩进规则基于以下 MetaPost 结构：
+
+- **增加缩进**：`def`, `vardef`, `if`, `for`, `forever`, `beginfig`, `begingroup`
+- **减少缩进**：`enddef`, `endfor`, `fi`, `endfig`, `endgroup`, `end`
+- **特殊处理**：`else`, `elseif` 会减少一级缩进
+
+缩进功能会自动检测您是否在 MetaPost 代码块中，并应用相应的缩进规则。如果缩进没有按预期工作，可以：
+
+1. 确保 `filetype=tex` 已设置：`:set filetype=tex`
+2. 重新加载文件：`:e`
+3. 手动触发缩进：在 MetaPost 块中按 `==` 或使用 `gg=G` 重新缩进整个文件
+
 ## 文件结构
 
 ```
 vim-metapost-hilight/
 ├── syntax/
 │   └── mpost.vim              # MetaPost 语法定义
+├── indent/
+│   └── mpost.vim              # MetaPost 缩进规则
 ├── after/
-│   └── syntax/
-│       └── tex.vim            # LaTeX 文件中的嵌入语法
+│   ├── syntax/
+│   │   └── tex.vim            # LaTeX 文件中的嵌入语法
+│   └── indent/
+│       └── tex.vim            # LaTeX 文件中的 MetaPost 缩进支持
 ├── plugin/
 │   └── metapost-hilight.vim   # 主插件文件
 ├── test-mpostinl.tex         # mpostinl 包测试文件
