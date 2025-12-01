@@ -220,6 +220,40 @@ let g:metapost_use_builtin_syntax = 1
 
 **注意**：由于 Vim 内置的 `mp.vim` 使用 vim9script，在某些情况下可能无法正常工作。如果遇到问题，请移除该设置，使用默认的自定义语法。
 
+### 自定义关键字、函数和常量
+
+如果您使用扩展的 MetaPost 库（如自定义宏或第三方库），可以在 `~/.vimrc` 中添加自定义关键字、函数和常量，让它们也被正确高亮：
+
+```vim
+" 自定义关键字（如扩展库提供的特殊命令）
+let g:metapost_custom_keywords = [
+  \ 'my_custom_keyword',
+  \ 'another_keyword',
+  \ 'special_command'
+\ ]
+
+" 自定义函数（如扩展库提供的函数）
+let g:metapost_custom_functions = [
+  \ 'my_function',
+  \ 'another_func',
+  \ 'custom_transform'
+\ ]
+
+" 自定义常量（如扩展库提供的常量）
+let g:metapost_custom_constants = [
+  \ 'MY_CONSTANT',
+  \ 'PI_VALUE',
+  \ 'DEFAULT_SCALE'
+\ ]
+```
+
+**说明**：
+- 支持包含下划线的名称（如 `set_point_`、`vec_def_vec_` 等）
+- 关键字会被高亮为 `Keyword` 类型
+- 函数会被高亮为 `Function` 类型
+- 常量会被高亮为 `Constant` 类型
+- 这些自定义定义会与内置的关键字、函数和常量一起工作
+
 ## 故障排除
 
 如果语法高亮没有正确显示：

@@ -53,7 +53,9 @@ if !exists("b:mpost_syntax_loaded")
         syn match mpostKeyword contained "\<vec_rotate_\>"
         syn match mpostKeyword contained "\<vec_prod_\>"
         syn match mpostKeyword contained "\<vec_mult_\>"
+        syn match mpostKeyword contained "\<vec_mult\>"
         syn match mpostKeyword contained "\<vec_sum_\>"
+        syn match mpostKeyword contained "\<vec_sum\>"
         syn match mpostKeyword contained "\<vec_diff\>"
         syn match mpostKeyword contained "\<vec_unit\>"
         hi def link mpostKeyword Keyword
@@ -77,6 +79,67 @@ if !exists("b:mpost_syntax_loaded")
   
   " 恢复 iskeyword 设置
   let &iskeyword = s:mpost_iskeyword_save
+  
+  " ===== 添加用户自定义关键字、函数和常量 =====
+  " 即使用户使用内置语法，也支持自定义关键字
+  " 用户可以在 vimrc 中定义以下变量：
+  "   - g:metapost_custom_keywords: 自定义关键字列表
+  "   - g:metapost_custom_functions: 自定义函数列表
+  "   - g:metapost_custom_constants: 自定义常量列表
+  
+  " 确定使用哪个语法组（内置语法使用 mpKeyword，自定义语法使用 mpostKeyword）
+  let s:keyword_group = hlexists("mpKeyword") ? "mpKeyword" : "mpostKeyword"
+  let s:function_group = hlexists("mpFunction") ? "mpFunction" : "mpostFunction"
+  let s:constant_group = hlexists("mpConstant") ? "mpConstant" : "mpostConstant"
+  
+  " 用户自定义关键字
+  if exists("g:metapost_custom_keywords")
+    for keyword in g:metapost_custom_keywords
+      if keyword != ""
+        if keyword =~ '_'
+          exe 'syn match ' . s:keyword_group . ' contained "\<' . escape(keyword, '\.*^$~[]') . '\>"'
+        else
+          exe 'syn keyword ' . s:keyword_group . ' contained ' . keyword
+        endif
+        " 确保添加到语法集群中
+        if s:keyword_group == "mpostKeyword"
+          syn cluster mpostSyntax add=mpostKeyword
+        endif
+      endif
+    endfor
+  endif
+  
+  " 用户自定义函数
+  if exists("g:metapost_custom_functions")
+    for func in g:metapost_custom_functions
+      if func != ""
+        if func =~ '_'
+          exe 'syn match ' . s:function_group . ' contained "\<' . escape(func, '\.*^$~[]') . '\>"'
+        else
+          exe 'syn keyword ' . s:function_group . ' contained ' . func
+        endif
+        if s:function_group == "mpostFunction"
+          syn cluster mpostSyntax add=mpostFunction
+        endif
+      endif
+    endfor
+  endif
+  
+  " 用户自定义常量
+  if exists("g:metapost_custom_constants")
+    for const in g:metapost_custom_constants
+      if const != ""
+        if const =~ '_'
+          exe 'syn match ' . s:constant_group . ' contained "\<' . escape(const, '\.*^$~[]') . '\>"'
+        else
+          exe 'syn keyword ' . s:constant_group . ' contained ' . const
+        endif
+        if s:constant_group == "mpostConstant"
+          syn cluster mpostSyntax add=mpostConstant
+        endif
+      endif
+    endfor
+  endif
 endif
 
 " 定义 mpostfig 环境
