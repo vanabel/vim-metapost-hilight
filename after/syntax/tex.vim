@@ -66,13 +66,13 @@ syn region texMpostDefContent
       \ keepend
 
 " 定义 mposttex 环境（LaTeX 代码块）
-" 使用 @tex 确保所有 tex 语法元素（包括 \usepackage）被正确高亮
-" @tex 包含所有 tex 语法组，包括 texInputFile（用于 \usepackage）
+" 使用 transparent 让 tex 语法自然处理内容，确保 \usepackage 等命令被正确高亮
+" matchgroup 确保 \begin 和 \end 标记被正确高亮
 syn region texMpostTexContent
       \ matchgroup=texCmd
       \ start="\\begin{mposttex}"
       \ end="\\end{mposttex}"
-      \ contains=@tex
+      \ transparent
       \ keepend
 
 " 高亮组
