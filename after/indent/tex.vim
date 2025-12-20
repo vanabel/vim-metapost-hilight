@@ -95,6 +95,16 @@ endif
 function! GetTexIndentWithMetaPost()
   " 如果当前行在 MetaPost 块中，使用 MetaPost 缩进
   if IsInMetaPostBlock(v:lnum)
+    " 检查当前行是否是 \end{xxx}
+    let l:curline = getline(v:lnum)
+    if l:curline =~# '\\end{mpostfig}\|\\end{mpostdef}\|\\end{mpisplay}\|\\end{mpinline}\|\\end{mpdefs}'
+      " \end{xxx} 应该与 \begin{xxx} 对齐
+      let l:begin_indent = FindBeginIndent(v:lnum)
+      if l:begin_indent >= 0
+        return l:begin_indent
+      endif
+    endif
+    
     " 查找最近的 \begin{xxx} 行的缩进
     let l:begin_indent = FindBeginIndent(v:lnum)
     
