@@ -93,18 +93,37 @@ endif
 
 " 重写缩进函数，兼容 vimtex 和其他 LaTeX 缩进插件
 function! GetTexIndentWithMetaPost()
+  let l:curline = getline(v:lnum)
+  
+  " 检查当前行是否是 \begin{xxx} 或 \end{xxx}（LaTeX 环境标记）
+  " 这些行应该使用 LaTeX 的缩进规则（vimtex），而不是 MetaPost 的
+  if l:curline =~# '\\begin{mpostfig}\|\\begin{mpostdef}\|\\begin{mpisplay}\|\\begin{mpinline}\|\\begin{mpdefs}'
+    " \begin{xxx} 应该使用 LaTeX 缩进规则
+    if exists("*GetTeXIndent")
+      return GetTeXIndent()
+    endif
+    " 如果没有 vimtex，使用上一行的缩进
+    let l:prevlnum = prevnonblank(v:lnum - 1)
+    return l:prevlnum > 0 ? indent(l:prevlnum) : 0
+  endif
+  
+  if l:curline =~# '\\end{mpostfig}\|\\end{mpostdef}\|\\end{mpisplay}\|\\end{mpinline}\|\\end{mpdefs}'
+    " \end{xxx} 应该使用 LaTeX 缩进规则（与 \begin{xxx} 对齐）
+    if exists("*GetTeXIndent")
+      return GetTeXIndent()
+    endif
+    " 如果没有 vimtex，查找对应的 \begin{xxx} 并与其对齐
+    let l:begin_indent = FindBeginIndent(v:lnum)
+    if l:begin_indent >= 0
+      return l:begin_indent
+    endif
+    " 如果找不到，使用上一行的缩进
+    let l:prevlnum = prevnonblank(v:lnum - 1)
+    return l:prevlnum > 0 ? indent(l:prevlnum) : 0
+  endif
+  
   " 如果当前行在 MetaPost 块中，使用 MetaPost 缩进
   if IsInMetaPostBlock(v:lnum)
-    " 检查当前行是否是 \end{xxx}
-    let l:curline = getline(v:lnum)
-    if l:curline =~# '\\end{mpostfig}\|\\end{mpostdef}\|\\end{mpisplay}\|\\end{mpinline}\|\\end{mpdefs}'
-      " \end{xxx} 应该与 \begin{xxx} 对齐
-      let l:begin_indent = FindBeginIndent(v:lnum)
-      if l:begin_indent >= 0
-        return l:begin_indent
-      endif
-    endif
-    
     " 查找最近的 \begin{xxx} 行的缩进
     let l:begin_indent = FindBeginIndent(v:lnum)
     
