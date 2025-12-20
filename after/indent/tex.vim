@@ -39,6 +39,20 @@ function! IsInMetaPostBlock(lnum)
   return 0
 endfunction
 
+" 查找最近的 \begin{xxx} 行的缩进
+function! FindBeginIndent(lnum)
+  let l:line = a:lnum - 1
+  while l:line > 0
+    let l:text = getline(l:line)
+    " 检查是否是 \begin{xxx}
+    if l:text =~# '\\begin{mpostfig}\|\\begin{mpostdef}\|\\begin{mpisplay}\|\\begin{mpinline}\|\\begin{mpdefs}'
+      return indent(l:line)
+    endif
+    let l:line -= 1
+  endwhile
+  return -1
+endfunction
+
 " 加载 MetaPost 缩进函数（从 indent/mpost.vim）
 " 如果函数不存在，定义它
 if !exists("*GetMetaPostIndent")
@@ -81,8 +95,37 @@ endif
 function! GetTexIndentWithMetaPost()
   " 如果当前行在 MetaPost 块中，使用 MetaPost 缩进
   if IsInMetaPostBlock(v:lnum)
-    " 使用 MetaPost 缩进函数
-    return GetMetaPostIndent()
+    " 查找最近的 \begin{xxx} 行的缩进
+    let l:begin_indent = FindBeginIndent(v:lnum)
+    
+    if l:begin_indent >= 0
+      " 检查上一行是否是 \begin{xxx} 行或空行
+      let l:prevlnum = prevnonblank(v:lnum - 1)
+      let l:prevline = ""
+      if l:prevlnum > 0
+        let l:prevline = getline(l:prevlnum)
+      endif
+      
+      " 如果是环境内的第一行内容（上一行是 \begin 或空行），直接使用 \begin 的缩进 + 2
+      if l:prevline =~# '\\begin{mpostfig}\|\\begin{mpostdef}\|\\begin{mpisplay}\|\\begin{mpinline}\|\\begin{mpdefs}' || l:prevline == ""
+        return l:begin_indent + 2
+      endif
+      
+      " 否则，使用 MetaPost 缩进函数计算相对缩进
+      " 但是我们需要确保环境内的内容至少缩进 2 个空格（相对于 \begin）
+      let l:mpost_indent = GetMetaPostIndent()
+      
+      " 如果 MetaPost 缩进小于或等于 \begin 的缩进，说明需要至少缩进 2 个空格
+      if l:mpost_indent <= l:begin_indent
+        return l:begin_indent + 2
+      endif
+      
+      " 否则使用 MetaPost 计算的缩进（它已经考虑了 if/else/fi 等结构）
+      return l:mpost_indent
+    else
+      " 如果找不到 \begin，使用标准的 MetaPost 缩进
+      return GetMetaPostIndent()
+    endif
   endif
   
   " 否则调用 vimtex 的缩进函数（如果存在）
