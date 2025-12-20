@@ -22,15 +22,26 @@ function! s:LastTagIsOpen(line)
   if l:clean_line =~# '\<vardef\>\s*$'
     return 1
   endif
+  " if 语句：检查是否以 : 结尾（如 if condition:）
   if l:clean_line =~# '\<if\>.*:\s*$'
     return 1
   endif
+  " elseif 语句：检查是否以 : 结尾（如 elseif condition:）
+  if l:clean_line =~# '\<elseif\>.*:\s*$'
+    return 1
+  endif
+  " else 语句：检查是否以 : 结尾（如 else:）
+  if l:clean_line =~# '\<else\>:\s*$'
+    return 1
+  endif
+  " for 语句：检查是否以 : 结尾
   if l:clean_line =~# '\<for\>.*:\s*$'
     return 1
   endif
   if l:clean_line =~# '\<forever\>\s*$'
     return 1
   endif
+  " begingroup 后应该增加缩进
   if l:clean_line =~# '\<begingroup\>\s*$'
     return 1
   endif
@@ -63,13 +74,14 @@ function! s:StartsWithCloseTag(line)
   if a:line =~# '^\s*\<endfig\>'
     return 1
   endif
+  " endgroup 应该减少缩进（与 begingroup 对齐）
   if a:line =~# '^\s*\<endgroup\>'
     return 1
   endif
   if a:line =~# '^\s*\<end\>'
     return 1
   endif
-  " 检查 else, elseif
+  " 检查 else, elseif - 它们应该与 if 对齐（减少一级缩进）
   if a:line =~# '^\s*\<else\>'
     return 1
   endif
@@ -118,7 +130,7 @@ function! GetMetaPostIndent()
   let l:curline = getline(v:lnum)
   let l:indent = indent(l:prevlnum)
 
-  " 如果上一行以开放标签结尾，增加缩进
+  " 如果上一行以开放标签结尾（if, for, def, begingroup 等），增加缩进
   if s:LastTagIsOpen(l:prevline)
     let l:indent += shiftwidth()
   endif
@@ -129,6 +141,7 @@ function! GetMetaPostIndent()
   endif
 
   " 如果当前行以闭合标签开头，减少缩进
+  " 这包括：elseif, else, fi, enddef, endfor, endgroup 等
   if s:StartsWithCloseTag(l:curline)
     let l:indent -= shiftwidth()
   endif
