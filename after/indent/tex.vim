@@ -77,7 +77,7 @@ if !exists("*GetMetaPostIndent")
   endfunction
 endif
 
-" 重写缩进函数
+" 重写缩进函数，兼容 vimtex 和其他 LaTeX 缩进插件
 function! GetTexIndentWithMetaPost()
   " 如果当前行在 MetaPost 块中，使用 MetaPost 缩进
   if IsInMetaPostBlock(v:lnum)
@@ -85,12 +85,29 @@ function! GetTexIndentWithMetaPost()
     return GetMetaPostIndent()
   endif
   
-  " 否则使用默认的 tex 缩进
+  " 否则调用 vimtex 的缩进函数（如果存在）
   if exists("*GetTeXIndent")
     return GetTeXIndent()
   endif
   
-  " 如果没有原始函数，使用简单的缩进
+  " 如果没有 vimtex，尝试使用当前设置的 indentexpr（可能是其他插件的）
+  " 但我们需要避免递归调用自己
+  let l:current_expr = &indentexpr
+  if l:current_expr != "" && l:current_expr != "GetTexIndentWithMetaPost()"
+    try
+      " 如果是一个函数调用，尝试执行它
+      if l:current_expr =~# '()$'
+        let l:func_name = substitute(l:current_expr, '()$', '', '')
+        if exists("*" . l:func_name) && l:func_name != "GetTexIndentWithMetaPost"
+          return call(l:func_name, [])
+        endif
+      endif
+    catch
+      " 如果调用失败，继续使用默认行为
+    endtry
+  endif
+  
+  " 如果没有其他缩进函数，使用简单的缩进（保持上一行的缩进）
   let l:prevlnum = prevnonblank(v:lnum - 1)
   return l:prevlnum > 0 ? indent(l:prevlnum) : 0
 endfunction
@@ -102,7 +119,24 @@ else
   let b:undo_indent = "setlocal indentexpr< indentkeys<"
 endif
 
-" 设置缩进表达式
-setlocal indentexpr=GetTexIndentWithMetaPost()
-" 添加 MetaPost 缩进键
-setlocal indentkeys+=!^F,o,O,0=enddef,0=endfor,0=fi,0=endfig,0=endgroup,0=end,0=else,0=elseif
+" 使用延迟加载机制，确保在 vimtex 之后设置
+" 这样我们可以检测并调用 vimtex 的函数
+augroup MetaPostIndent
+  autocmd!
+  " 在 FileType 事件后设置，确保其他插件（如 vimtex）已经加载
+  autocmd FileType tex,plaintex,context
+        \ call s:SetupIndent()
+augroup END
+
+" 设置缩进的辅助函数
+function! s:SetupIndent()
+  " 设置我们的缩进函数
+  setlocal indentexpr=GetTexIndentWithMetaPost()
+  " 添加 MetaPost 特定的缩进键（追加，不覆盖现有的）
+  setlocal indentkeys+=0=enddef,0=endfor,0=fi,0=endfig,0=endgroup,0=end,0=else,0=elseif
+endfunction
+
+" 如果文件类型已经设置，立即调用设置函数
+if &filetype =~# '^tex$\|^plaintex$\|^context$'
+  call s:SetupIndent()
+endif
